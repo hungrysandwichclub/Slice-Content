@@ -1,8 +1,8 @@
-![Extract text Gif](readme/extract-codepen-example.gif)
-
 # Extract Text splits WYSIWYG content into chunks
 
 Extract text will split text every time it reaches a new `<h3>` tag (or any tag you choose) and return the sections of content to use anywhere on the page.
+
+![Extract text Gif](readme/extract-codepen-example.gif)
 
 ## Demo
 
