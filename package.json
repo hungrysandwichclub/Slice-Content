@@ -1,0 +1,24 @@
+{
+  "name": "HungryShopifyContent",
+  "version": "1.0.0",
+  "description": "A Javascript helper function.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel demo.html",
+    "build": "parcel build demo.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joeqj/HungryShopifyContent.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joeqj/HungryShopifyContent/issues"
+  },
+  "homepage": "https://github.com/joeqj/HungryShopifyContent#readme",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
+  }
+}
