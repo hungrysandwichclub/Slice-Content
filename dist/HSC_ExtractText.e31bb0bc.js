@@ -123,15 +123,24 @@ window.ExtractText = function () {
   /*
   * Setup Function Constructor
   * @param {String} selector
+  * @param {String} parent element (optional)
   */
 
-  var Constructor = function Constructor(selector) {
-    if (!selector) {
-      throw new Error('🤔 Selector not found');
+  var Constructor = function Constructor(selector, parent) {
+    //Handle selector
+    if (!selector) throw new Error('🤔 Selector not found');
+    this.selector = selector; // Check if parent has been specified
+
+    if (!parent) {
+      // Find parent from script location
+      this.parent = document.currentScript.parentElement;
+    } else {
+      // Assign parent from input
+      this.parent = document.querySelector(parent); // Handle if specified parent does not exist
+
+      if (!this.parent) throw new Error('🤔 Element "' + parent + '" not found in DOM');
     }
 
-    this.selector = selector;
-    this.parent = document.currentScript.parentElement;
     this.elements = this.parent.querySelectorAll(this.selector);
   };
   /*
@@ -194,6 +203,10 @@ window.ExtractText = function () {
 
   return Constructor;
 }();
+
+document.addEventListener('DOMContentLoaded', function (event) {
+  new ExtractText("h3", ".card").format();
+});
 },{}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -222,7 +235,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56576" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59984" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -6,14 +6,23 @@ window.ExtractText = (function() {
   /*
   * Setup Function Constructor
   * @param {String} selector
+  * @param {String} parent element (optional)
   */
-  var Constructor = function (selector) {
-      if (!selector) {
-          throw new Error('🤔 Selector not found');
-      }
-      this.selector = selector;
+  var Constructor = function (selector, parent) {
+    //Handle selector
+    if (!selector) throw new Error('🤔 Selector not found');
+    this.selector = selector;
+    // Check if parent has been specified
+    if(!parent) {
+      // Find parent from script location
       this.parent = document.currentScript.parentElement;
-      this.elements = this.parent.querySelectorAll(this.selector);
+    } else {
+      // Assign parent from input
+      this.parent = document.querySelector(parent);
+      // Handle if specified parent does not exist
+      if(!this.parent) throw new Error('🤔 Element "' + parent + '" not found in DOM');
+    }
+    this.elements = this.parent.querySelectorAll(this.selector);
   }
 
   /*
@@ -70,3 +79,8 @@ window.ExtractText = (function() {
 
   return Constructor;
 })();
+
+
+document.addEventListener('DOMContentLoaded', (event) => {
+  new ExtractText("h3", ".card").format();
+})
