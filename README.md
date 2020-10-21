@@ -4,11 +4,11 @@
 
 Slice Content will split text every time it reaches a new `<h3>` tag (or any tag you choose) and return the sections of content to use anywhere on the page.
 
-![Slice Content Gif](readme/extract-codepen-example.gif)
-
 ## Demo
 
 [Live demo on Codepen](https://codepen.io/joe_sandwich/pen/XWKjKzV)
+
+![Slice Content Gif](readme/extract-codepen-example.gif)
 
 ## Use Cases
 
