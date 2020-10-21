@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopify Helper</title>
-    <script src="/HSC_ExtractText.e31bb0bc.js"></script>
+    <script src="/SliceContent.e164bfd5.js"></script>
     <style>main {
         width: 100vw;
         height: 100vh;
@@ -18,6 +18,18 @@
         width: 500px;
         padding: 2rem;
         margin: 2rem;
+      }
+      .new {
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        background: #eee;
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row;
       }</style>
   </head>
   <body>
@@ -33,8 +45,23 @@
             </select>
             <h3>Heading 3</h3>
             <p>In ligula platea ad id ut urna parturient a vel ultricies a amet fames a habitasse dis. <a href="#!">Aliquet</a> metus a duis non imperdiet metus vel a vestibulum ut ultrices massa cubilia ut vestibulum metus a ac facilisis. Dui magna a ligula ullamcorper odio volutpat eleifend ullamcorper mi urna montes vestibulum mollis consequat nec a class.</p>
+            <!-- Quick and dirty implemention you could place right in your wysiwyg editor -->
+            <!-- <script>
+              new ExtractText({ selector: "h3" });
+            </script> -->
         </div>
     </main>
-    
+    <aside class="new">
+
+    </aside>
+    <script>document.addEventListener("DOMContentLoaded", function (event) {
+  var text = new SliceContent({
+    selector: "h3",
+    parent: ".card",
+    output: ""
+  }); // Accessing HTML data
+
+  console.table(text);
+});</script>
   </body>
 </html>

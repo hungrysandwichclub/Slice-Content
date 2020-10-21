@@ -117,74 +117,126 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
-var bundleURL = null;
+})({"SliceContent.js":[function(require,module,exports) {
+window.SliceContent = function () {
+  "use strict";
 
-function getBundleURLCached() {
-  if (!bundleURL) {
-    bundleURL = getBundleURL();
-  }
+  var defaults = {
+    selector: "",
+    parent: "",
+    output: ""
+  };
+  var settings;
+  /*
+   * Setup Function Constructor
+   * @param {String} selector
+   * @param {String} parent element (optional)
+   */
 
-  return bundleURL;
-}
+  var Constructor = function Constructor(options) {
+    // Initialise Settings from user input
+    settings = Object.assign({}, defaults, options);
+    this.sections = {}; // Handle selector
 
-function getBundleURL() {
-  // Attempt to find the URL of the current script and use that as the base URL
-  try {
-    throw new Error();
-  } catch (err) {
-    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
+    if (!settings.selector) throw new Error("🤔 Selector not found");
 
-    if (matches) {
-      return getBaseURL(matches[0]);
+    if (!settings.parent) {
+      // Find parent from script location
+      this.parent = document.currentScript.parentElement;
+    } else {
+      if (!settings.parent) throw new Error('🤔 Element "' + parent + '" not found in DOM');
+      this.parent = document.querySelector(settings.parent);
+    } // Initialiser for extract function
+
+
+    this.content = [];
+    this.elements = this.parent.querySelectorAll(settings.selector); // Initialise straight away
+
+    this.extract();
+    this.format(); // Return the sections
+
+    return this.sections;
+  };
+  /*
+   * Get all following siblings of each element up to but not including the element matched by the selector
+   * https://vanillajstoolkit.com/helpers/nextuntil/
+   */
+
+
+  var nextUntil = function nextUntil(elem, selector, filter) {
+    // Setup siblings array
+    var siblings = []; // Get the next sibling element
+
+    elem = elem.nextElementSibling; // As long as a sibling exists
+
+    while (elem) {
+      // If we've reached our match, bail
+      if (elem.matches(selector)) break; // If filtering by a selector, check if the sibling matches
+
+      if (filter && !elem.matches(filter)) {
+        elem = elem.nextElementSibling;
+        continue;
+      } // Otherwise, push it to the siblings array
+
+
+      siblings.push(elem); // Get the next sibling element
+
+      elem = elem.nextElementSibling;
     }
-  }
 
-  return '/';
-}
+    return siblings;
+  };
+  /*
+   * Parse HTML and store in Array
+   */
 
-function getBaseURL(url) {
-  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
-}
 
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-},{}],"node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
-var bundle = require('./bundle-url');
+  Constructor.prototype.extract = function () {
+    for (var i = 0; i < this.elements.length; i++) {
+      var innerContent = nextUntil(this.elements[i], this.selector); // Prepend header to content
 
-function updateLink(link) {
-  var newLink = link.cloneNode();
+      innerContent.unshift(this.elements[i]);
+      this.content.push(innerContent);
+    }
+  };
+  /*
+   * Iterate though content and insert into DOM as seperate blocks
+   */
 
-  newLink.onload = function () {
-    link.remove();
+
+  Constructor.prototype.format = function () {
+    for (var i = 0; i < this.content.length; i++) {
+      var element = document.createElement("div"); // Set element class to the same as parent
+      //! This could be improved - optional use of class
+
+      element.setAttribute("class", this.parent.className);
+
+      if (!settings.output) {
+        for (var n = 0; n < this.content[i].length; n++) {
+          element.appendChild(this.content[i][n]);
+        }
+
+        this.parent.parentElement.appendChild(element);
+      } else {
+        var output = document.querySelector(settings.output);
+
+        for (var _n = 0; _n < this.content[i].length; _n++) {
+          element.appendChild(this.content[i][_n]);
+        }
+
+        output.appendChild(element);
+      }
+
+      this.sections[i] = element.innerHTML;
+    } // Remove original DOM element
+
+
+    this.parent.remove();
   };
 
-  newLink.href = link.href.split('?')[0] + '?' + Date.now();
-  link.parentNode.insertBefore(newLink, link.nextSibling);
-}
-
-var cssTimeout = null;
-
-function reloadCSS() {
-  if (cssTimeout) {
-    return;
-  }
-
-  cssTimeout = setTimeout(function () {
-    var links = document.querySelectorAll('link[rel="stylesheet"]');
-
-    for (var i = 0; i < links.length; i++) {
-      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
-        updateLink(links[i]);
-      }
-    }
-
-    cssTimeout = null;
-  }, 50);
-}
-
-module.exports = reloadCSS;
-},{"./bundle-url":"node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+  return Constructor;
+}();
+},{}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -388,5 +440,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js"], null)
-//# sourceMappingURL=/demo.js.map
+},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","SliceContent.js"], null)
+//# sourceMappingURL=/SliceContent.e164bfd5.js.map
