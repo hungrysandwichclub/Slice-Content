@@ -1,8 +1,10 @@
-# Extract Text splits WYSIWYG content into chunks
+![Slice Content Thumbnail Gif](readme/thumb-loop-with-type.gif)
 
-Extract text will split text every time it reaches a new `<h3>` tag (or any tag you choose) and return the sections of content to use anywhere on the page.
+# Slice Content splits WYSIWYG content into chunks
 
-![Extract text Gif](readme/extract-codepen-example.gif)
+Slice Content will split text every time it reaches a new `<h3>` tag (or any tag you choose) and return the sections of content to use anywhere on the page.
+
+![Slice Content Gif](readme/extract-codepen-example.gif)
 
 ## Demo
 
@@ -14,7 +16,7 @@ To avoid restrictions in a CMS e.g. Shopify, which only uses a single wysiwyg ed
 
 Often this doesn't give enough flexibility to present information to the user in a more structured way eg. in an accordion, tabs or in different containers. 
 
-Extract Text gives a client-friendly solution by allowing text to be separated by natural dividers in the text.
+Slice Content gives a client-friendly solution by allowing text to be separated by natural dividers in the text.
 
 
 ## Usage
@@ -25,11 +27,11 @@ Basic:
 
 ```js
 
-Import ExtractText from 'extractText'
+import SliceContent from 'SliceContent'
 
-const extract = new ExtractText();
+const slices = new SliceContent();
 
-console.log(extract);
+console.log(slices);
 
 ```
 
@@ -37,19 +39,19 @@ Advanced:
 
 ```js
 
-Import ExtractText from 'extractText'
+import SliceContent from 'SliceContent'
 
-const extract = new ExtractText({
+const slices = new SliceContent({
     selector: "h3", 
     parent: ".card",
     output: ""
 });
-console.log(extract);
+console.log(slices);
 
 ```
 
 ## Browser support
-Extract Text is supported in recent versions of the following browsers:
+Slice Content is supported in recent versions of the following browsers:
 
 - Google Chrome
 - Firefox
