@@ -117,121 +117,50 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"SliceContent.js":[function(require,module,exports) {
-window.ExtractText = function () {
+})({"index.js":[function(require,module,exports) {
+var HungryShopifyContent = function () {
   "use strict";
-
-  var defaults = {
-    selector: "",
-    parent: "",
-    output: ""
-  };
-  var settings;
   /*
-   * Setup Function Constructor
-   * @param {String} selector
-   * @param {String} parent element (optional)
-   */
+  * Setup Function Constructor
+  * @param {String} selector
+  */
 
-  var Constructor = function Constructor(options) {
-    // Initialise Settings from user input
-    settings = Object.assign({}, defaults, options);
-    this.sections = {}; // Handle selector
+  var Constructor = function Constructor(selector) {
+    if (!selector) {
+      throw new Error('🤔 Selector not found');
+    }
 
-    if (!settings.selector) throw new Error("🤔 Selector not found");
+    this.selector = selector;
+    this.parent = document.currentScript.parentElement; // this.elements = this.parent.querySelectorAll(this.selector);
+  };
 
-    if (!settings.parent) {
-      // Find parent from script location
-      this.parent = document.currentScript.parentElement;
+  Constructor.prototype.extract = function (el, prefix, suffix) {
+    var s = el;
+    var i = s.indexOf(prefix);
+
+    if (i >= 0) {
+      s = s.substring(i + prefix.length);
     } else {
-      if (!settings.parent) throw new Error('🤔 Element "' + parent + '" not found in DOM');
-      this.parent = document.querySelector(settings.parent);
-    } // Initialiser for extract function
-
-
-    this.content = [];
-    this.elements = this.parent.querySelectorAll(settings.selector); // Initialise straight away
-
-    this.extract();
-    this.format(); // Return the sections
-
-    return this.sections;
-  };
-  /*
-   * Get all following siblings of each element up to but not including the element matched by the selector
-   * https://vanillajstoolkit.com/helpers/nextuntil/
-   */
-
-
-  var nextUntil = function nextUntil(elem, selector, filter) {
-    // Setup siblings array
-    var siblings = []; // Get the next sibling element
-
-    elem = elem.nextElementSibling; // As long as a sibling exists
-
-    while (elem) {
-      // If we've reached our match, bail
-      if (elem.matches(selector)) break; // If filtering by a selector, check if the sibling matches
-
-      if (filter && !elem.matches(filter)) {
-        elem = elem.nextElementSibling;
-        continue;
-      } // Otherwise, push it to the siblings array
-
-
-      siblings.push(elem); // Get the next sibling element
-
-      elem = elem.nextElementSibling;
+      return '';
     }
 
-    return siblings;
-  };
-  /*
-   * Parse HTML and store in Array
-   */
+    if (suffix) {
+      i = s.indexOf(suffix);
 
-
-  Constructor.prototype.extract = function () {
-    for (var i = 0; i < this.elements.length; i++) {
-      var innerContent = nextUntil(this.elements[i], this.selector); // Prepend header to content
-
-      innerContent.unshift(this.elements[i]);
-      this.content.push(innerContent);
+      if (i >= 0) {
+        s = s.substring(0, i);
+      } else {
+        return '';
+      }
     }
-  };
-  /*
-   * Iterate though content and insert into DOM as seperate blocks
-   */
 
+    return s;
+  };
 
   Constructor.prototype.format = function () {
-    for (var i = 0; i < this.content.length; i++) {
-      var element = document.createElement("div"); // Set element class to the same as parent
-      //! This could be improved - optional use of class
-
-      element.setAttribute("class", this.parent.className);
-
-      if (!settings.output) {
-        for (var n = 0; n < this.content[i].length; n++) {
-          element.appendChild(this.content[i][n]);
-        }
-
-        this.parent.parentElement.appendChild(element);
-      } else {
-        var output = document.querySelector(settings.output);
-
-        for (var _n = 0; _n < this.content[i].length; _n++) {
-          element.appendChild(this.content[i][_n]);
-        }
-
-        output.appendChild(element);
-      }
-
-      this.sections[i] = element.innerHTML;
-    } // Remove original DOM element
-
-
-    this.parent.remove();
+    var content = this.parent.innerHTML;
+    var result = content.match(/<.+?>(.*?)<\/.+?>/g);
+    console.table(result);
   };
 
   return Constructor;
@@ -264,7 +193,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52572" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53823" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -440,5 +369,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","SliceContent.js"], null)
-//# sourceMappingURL=/SliceContent.e164bfd5.js.map
+},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","index.js"], null)
+//# sourceMappingURL=/HungryShopifyContent.e31bb0bc.js.map

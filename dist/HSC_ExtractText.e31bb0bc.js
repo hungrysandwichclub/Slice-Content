@@ -117,74 +117,97 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
-var bundleURL = null;
+})({"index.js":[function(require,module,exports) {
+window.ExtractText = function () {
+  "use strict";
+  /*
+  * Setup Function Constructor
+  * @param {String} selector
+  * @param {String} parent element (optional)
+  */
 
-function getBundleURLCached() {
-  if (!bundleURL) {
-    bundleURL = getBundleURL();
-  }
+  var Constructor = function Constructor(selector, parent) {
+    //Handle selector
+    if (!selector) throw new Error('🤔 Selector not found');
+    this.selector = selector; // Check if parent has been specified
 
-  return bundleURL;
-}
+    if (!parent) {
+      // Find parent from script location
+      this.parent = document.currentScript.parentElement;
+    } else {
+      // Assign parent from input
+      this.parent = document.querySelector(parent); // Handle if specified parent does not exist
 
-function getBundleURL() {
-  // Attempt to find the URL of the current script and use that as the base URL
-  try {
-    throw new Error();
-  } catch (err) {
-    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
-
-    if (matches) {
-      return getBaseURL(matches[0]);
+      if (!this.parent) throw new Error('🤔 Element "' + parent + '" not found in DOM');
     }
-  }
 
-  return '/';
-}
+    this.elements = this.parent.querySelectorAll(this.selector);
+  };
+  /*
+  * Get all following siblings of each element up to but not including the element matched by the selector
+  * https://vanillajstoolkit.com/helpers/nextuntil/
+  */
 
-function getBaseURL(url) {
-  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
-}
 
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-},{}],"node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
-var bundle = require('./bundle-url');
+  var nextUntil = function nextUntil(elem, selector, filter) {
+    // matches() polyfill
+    if (!Element.prototype.matches) {
+      Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
+    } // Setup siblings array
 
-function updateLink(link) {
-  var newLink = link.cloneNode();
 
-  newLink.onload = function () {
-    link.remove();
+    var siblings = []; // Get the next sibling element
+
+    elem = elem.nextElementSibling; // As long as a sibling exists
+
+    while (elem) {
+      // If we've reached our match, bail
+      if (elem.matches(selector)) break; // If filtering by a selector, check if the sibling matches
+
+      if (filter && !elem.matches(filter)) {
+        elem = elem.nextElementSibling;
+        continue;
+      } // Otherwise, push it to the siblings array
+
+
+      siblings.push(elem); // Get the next sibling element
+
+      elem = elem.nextElementSibling;
+    }
+
+    return siblings;
+  };
+  /*
+  * Iterate though all elements and split into styled components
+  */
+
+
+  Constructor.prototype.format = function () {
+    // Loop though and create items - offset of 1 leaves first block in original element
+    for (var i = 1; i < this.elements.length; i++) {
+      // Get all content below selector
+      var content = nextUntil(this.elements[i], this.selector); // Prepend header to content
+
+      content.unshift(this.elements[i]); // Create new element with class that matches existing block
+
+      var element = document.createElement("div");
+      element.setAttribute('class', this.parent.className); // Populate element with content
+
+      for (var _i = 0; _i < content.length; _i++) {
+        element.appendChild(content[_i]);
+      }
+
+      this.parent.parentElement.appendChild(element);
+    }
   };
 
-  newLink.href = link.href.split('?')[0] + '?' + Date.now();
-  link.parentNode.insertBefore(newLink, link.nextSibling);
-}
+  return Constructor;
+}();
 
-var cssTimeout = null;
-
-function reloadCSS() {
-  if (cssTimeout) {
-    return;
-  }
-
-  cssTimeout = setTimeout(function () {
-    var links = document.querySelectorAll('link[rel="stylesheet"]');
-
-    for (var i = 0; i < links.length; i++) {
-      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
-        updateLink(links[i]);
-      }
-    }
-
-    cssTimeout = null;
-  }, 50);
-}
-
-module.exports = reloadCSS;
-},{"./bundle-url":"node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+document.addEventListener('DOMContentLoaded', function (event) {
+  new ExtractText("h3", ".card").format();
+});
+},{}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -388,5 +411,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js"], null)
-//# sourceMappingURL=/demo.js.map
+},{}]},{},["node_modules/parcel-bundler/src/builtins/hmr-runtime.js","index.js"], null)
+//# sourceMappingURL=/HSC_ExtractText.e31bb0bc.js.map
