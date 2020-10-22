@@ -21,7 +21,7 @@ Slice Content gives a dependency free, client-friendly solution by allowing text
 
 ## Usage
 
-`new ExtractText("your html selector", "parent element in DOM")`
+`new SliceContent("your html selector", "parent element in DOM")`
 
 Basic:
 
